@@ -545,6 +545,8 @@ def edit_list_user(param):
                     user.kindle_mail = valid_email(vals['value']) if vals['value'] else ""
                 elif param == 'kindle_mail_subject':
                     user.kindle_mail_subject = vals['value']
+                elif param == 'kindle_naming_structure':
+                    user.kindle_naming_structure = int(vals['value'])
                 elif param.endswith('role'):
                     value = int(vals['field_index'])
                     if user.name == "Guest" and value in \
@@ -2304,6 +2306,8 @@ def _handle_edit_user(to_save, content, languages, translations, kobo_support):
             content.kindle_mail = valid_email(to_save["kindle_mail"]) if to_save["kindle_mail"] else ""
         if to_save.get("kindle_mail_subject") is not None:
             content.kindle_mail_subject = (to_save.get("kindle_mail_subject", "") or "").strip()
+        if to_save.get("kindle_naming_structure") is not None:
+            content.kindle_naming_structure = int(to_save.get("kindle_naming_structure", 0)) or 0
 
     except Exception as ex:
         log.error(ex)
