@@ -203,7 +203,7 @@ def check_read_formats(entry):
 # 1: If epub file is existing, it's directly send to eReader email,
 # 2: If mobi file is existing, it's converted and send to eReader email,
 # 3: If Pdf file is existing, it's directly send to eReader email
-def send_mail(book_id, book_format, convert, ereader_mail, calibrepath, user_id, subject=None):
+def send_mail(book_id, book_format, convert, ereader_mail, calibrepath, user_id, subject=None, namingStructure=0):
     """Send email with attachments"""
     book = calibre_db.get_book(book_id)
 
@@ -219,7 +219,25 @@ def send_mail(book_id, book_format, convert, ereader_mail, calibrepath, user_id,
 
     for entry in iter(book.data):
         if entry.format.upper() == book_format.upper():
-            converted_file_name = entry.name + '.' + book_format.lower()
+            if namingStructure == 0:
+                converted_file_name = entity.title + "." + book_format.lower()
+            else:
+                if len(book.authors) > 0:
+                    authorsName = book.authors[0].name
+                else:
+                    authorsName = "Unknown Author"
+    
+                if len(book.series) > 0:
+                    seriesName = _("%(series)s (%(index)s)",series=book.series[0].name, index=book.series_index)
+                else:
+                    seriesName = "Standalone"
+                
+                converted_file_name = _("%(name)s - %(series)s - %(title)s.%(format)s", 
+                                        name=authorsName, 
+                                        series=seriesName, 
+                                        title=book.title, 
+                                        format=book_format.lower())
+            
             link = '<a href="{}">{}</a>'.format(url_for('web.show_book', book_id=book_id), escape(book.title))
             email_text = N_("%(book)s send to eReader", book=link)
             for email in ereader_mail.split(','):
