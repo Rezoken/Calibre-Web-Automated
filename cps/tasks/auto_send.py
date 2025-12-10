@@ -76,7 +76,8 @@ class TaskAutoSend(CalibreTask):
                 ereader_mail=user.kindle_mail,
                 calibrepath=config.get_book_path(),
                 user_id=user.name,
-                subject=user.kindle_mail_subject
+                subject=user.kindle_mail_subject,
+                namingStructure=user.kindle_naming_structure
             )
 
             if result is None:
