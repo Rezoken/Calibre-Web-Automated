@@ -234,6 +234,7 @@ class User(UserBase, Base):
     password = Column(String)
     kindle_mail = Column(String(120), default="")
     kindle_mail_subject = Column(String(256), default="", doc="Subject line for eReader email sending, empty=default")
+    kindle_naming_structure = Column(SmallInteger, default=0)
     shelf = relationship('Shelf', backref='user', lazy='dynamic', order_by='Shelf.name')
     downloads = relationship('Downloads', backref='user', lazy='dynamic')
     locale = Column(String(2), default="en")
@@ -292,6 +293,7 @@ class Anonymous(AnonymousUserMixin, UserBase):
         self.denied_tags = None
         self.kindle_mail = None
         self.kindle_mail_subject = None
+        self.kindle_naming_structure = None
         self.locale = None
         self.default_language = None
         self.sidebar_view = None
@@ -312,6 +314,7 @@ class Anonymous(AnonymousUserMixin, UserBase):
         self.locale = data.locale
         self.kindle_mail = data.kindle_mail
         self.kindle_mail_subject = data.kindle_mail_subject
+        self.kindle_naming_structure = data.kindle_naming_structure
         self.denied_tags = data.denied_tags
         self.allowed_tags = data.allowed_tags
         self.denied_column_value = data.denied_column_value
@@ -715,7 +718,17 @@ def migrate_user_table(engine, _session):
             trans = conn.begin()
             conn.execute(text("ALTER TABLE user ADD column 'kindle_mail_subject' String DEFAULT ''"))
             trans.commit()
-
+            
+    # Migration to add per-user naming structure for Kindle sending
+    try:
+        _session.query(exists().where(User.kindle_naming_structure)).scalar()
+        _session.commit()
+    except exc.OperationalError:
+        with engine.connect() as conn:
+            trans = conn.begin()
+            conn.execute(text("ALTER TABLE user ADD column 'kindle_naming_structure' SmallInteger DEFAULT 0"))
+            trans.commit()
+            
     # Migration to enable duplicates sidebar for existing admin users
     try:
         from . import constants
