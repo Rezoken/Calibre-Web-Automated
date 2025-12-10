@@ -1365,7 +1365,7 @@ def send_to_ereader(book_id, book_format, convert):
         return Response(json.dumps(response), mimetype='application/json')
 
     result = send_mail(book_id, book_format, convert, current_user.kindle_mail, config.get_book_path(),
-                       current_user.name, current_user.kindle_mail_subject)
+                       current_user.name, current_user.kindle_mail_subject, current_user.kindle_naming_structure)
     if result is None:
         ub.update_download(book_id, int(current_user.id))
         response = [{'type': "success", 'message': _("Success! Book queued for sending to %(eReadermail)s",
@@ -1391,7 +1391,7 @@ def send_to_selected_ereaders(book_id):
         response = [{'type': "danger", 'message': _("No email addresses selected")}]
         return Response(json.dumps(response), mimetype='application/json')
 
-    result = send_mail(book_id, book_format, int(convert), selected_emails, config.get_book_path(), current_user.name, current_user.kindle_mail_subject)
+    result = send_mail(book_id, book_format, int(convert), selected_emails, config.get_book_path(), current_user.name, current_user.kindle_mail_subject, current_user.kindle_naming_structure)
 
     if result is None:
         ub.update_download(book_id, int(current_user.id))
