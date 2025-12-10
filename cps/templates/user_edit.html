@@ -32,6 +32,14 @@
       <label for="kindle_mail_subject">{{_('Send to eReader Subject')}}</label>
       <input type="text" class="form-control" name="kindle_mail_subject" id="kindle_mail_subject" value="{{ content.kindle_mail_subject if content.kindle_mail_subject != None }}">
     </div>
+    <div class="form-group">
+      <label for="kindle_naming_structure">{{_('Send to eReader Naming Structure')}}</label>
+       <select name="kindle_naming_structure" id="kindle_naming_structure" class="form-control">
+        <option value="0" {% if content.kindle_naming_structure == 0 %}selected{% endif %}>Standard</option>
+        <option value="1" {% if content.kindle_naming_structure == 1 %}selected{% endif %}>Detailed</option>
+      </select>
+      <p class="help-block">{{_('When Detailed is selected, books will be sent to eReader email address with naming structure "[Author] - [Series ([Series Index])] - [Title].[Book_Format]".')}}</p>
+    </div>
     {% if not content.role_anonymous() %}
     <div class="form-group">
       <input type="checkbox" id="auto_send_enabled" name="auto_send_enabled" {% if content.auto_send_enabled %}checked{% endif %}>
