@@ -1711,6 +1711,8 @@ def change_profile(kobo_support, hardcover_support, local_oauth_check, oauth_sta
             current_user.kindle_mail = valid_email(to_save.get("kindle_mail"))
         if to_save.get("kindle_mail_subject", current_user.kindle_mail_subject) != current_user.kindle_mail_subject:
             current_user.kindle_mail_subject = strip_whitespaces(to_save.get("kindle_mail_subject", "")) or ""
+        if to_save.get("kindle_naming_structure", current_user.kindle_naming_structure) != current_user.kindle_naming_structure:
+            current_user.kindle_naming_structure = to_save.get("kindle_naming_structure")
         new_email = valid_email(to_save.get("email", current_user.email))
         if not new_email:
             raise Exception(_("Email can't be empty and has to be a valid Email"))
